@@ -403,6 +403,9 @@ button {
           <input type="number" step="0.1" id="ECQ122" placeholder="mS/cm" oninput="triggerAutoSave()">
         </div>
       </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
     </div>
 
     <div class="section">
@@ -442,6 +445,9 @@ button {
             <option value="not_done">✗ לא בוצע</option>
           </select>
         </div>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
       </div>
     </div>
 
@@ -617,6 +623,9 @@ button {
           </div>
         </div>
       </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
     </div>
 
     <div class="section">
@@ -647,6 +656,9 @@ button {
           <option value="empty">🟢 ריקה</option>
         </select>
       </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
     </div>
 
     <div class="section">
@@ -658,6 +670,9 @@ button {
           <option value="done">✓ בוצע</option>
           <option value="not_done">✗ לא בוצע</option>
         </select>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
       </div>
     </div>
 
@@ -771,6 +786,9 @@ button {
           </select>
         </div>
       </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
     </div>
 
     <div class="section">
@@ -883,6 +901,9 @@ button {
           </select>
         </div>
       </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
     </div>
 
     <div class="section">
@@ -891,11 +912,14 @@ button {
         <label>הערות</label>
         <textarea id="notes" placeholder="רשום כאן כל הערה או תצפית חשובה" rows="4" oninput="triggerAutoSave()"></textarea>
       </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
     </div>
 
     <div class="button-group">
       <button class="btn-success" onclick="finalizeDraft()">✅ סיום עבודה - שמור דוח סופי</button>
-      <button class="btn-secondary" onclick="continueLater()">⏸️ המשך מאוחר יותר</button>
+      <button class="btn-secondary" onclick="continueLater()">⏸️ חזור לעמוד התחלה</button>
     </div>
   </div>
 
@@ -1106,6 +1130,14 @@ function loadDraft(dateStr) {
 function continueLater() {
   autoSave();
   showMessage('✓ הטיוטה נשמרה. תוכל להמשיך מאוחר יותר', 'success');
+}
+
+function pauseWork() {
+  autoSave();
+  showMessage('💾 הנתונים נשמרו בטיוטה - תוכל להמשיך בשלב הבא', 'success');
+  setTimeout(() => {
+    switchTab({target: {classList: {add:()=>{}, remove:()=>{}}}}, 'start');
+  }, 1500);
 }
 
 function finalizeDraft() {
