@@ -18,11 +18,52 @@ body {
   color: white;
   padding: 2rem;
   border-radius: 12px;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 .header h1 { font-size: 28px; margin-bottom: 0.5rem; }
 .header p { font-size: 14px; opacity: 0.9; }
+
+.status-bar {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.status-info {
+  font-size: 13px;
+  color: #666;
+}
+.status-time {
+  font-weight: 600;
+  color: #667eea;
+}
+.auto-save-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ccc;
+  margin-right: 6px;
+  animation: pulse 2s infinite;
+}
+.auto-save-indicator.saving {
+  background: #ffa500;
+}
+.auto-save-indicator.saved {
+  background: #4caf50;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 .tabs {
   display: flex;
   gap: 0;
@@ -130,16 +171,21 @@ button {
   color: #333;
 }
 .btn-secondary:hover { background: #d0d0d0; }
-.btn-danger {
-  background: #ff6b6b;
+.btn-success {
+  background: #4caf50;
   color: white;
 }
-.btn-danger:hover { background: #ee5a52; }
+.btn-success:hover { background: #45a049; }
 .btn-warning {
   background: #ffa500;
   color: white;
 }
 .btn-warning:hover { background: #ff9400; }
+.btn-danger {
+  background: #ff6b6b;
+  color: white;
+}
+.btn-danger:hover { background: #ee5a52; }
 
 .status-message {
   padding: 12px 16px;
@@ -161,6 +207,25 @@ button {
   display: block;
 }
 
+.draft-card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-right: 4px solid #667eea;
+}
+.draft-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.draft-date { font-weight: 600; color: #333; }
+.draft-time { font-size: 12px; color: #999; }
+.draft-actions { display: flex; gap: 8px; }
+.draft-actions button { padding: 6px 12px; font-size: 12px; margin: 0; }
+
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -176,8 +241,6 @@ button {
 }
 .summary-card.ok { background: linear-gradient(135deg, #4caf50 0%, #45a049 100%); }
 .summary-card.error { background: linear-gradient(135deg, #f44336 0%, #da190b 100%); }
-.summary-card.warning { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); }
-
 .summary-label { font-size: 12px; opacity: 0.9; }
 .summary-value { font-size: 32px; font-weight: 700; margin-top: 8px; }
 
@@ -238,43 +301,6 @@ button {
   justify-content: flex-end;
 }
 
-.history-item {
-  background: #f9f9f9;
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  border-right: 4px solid #667eea;
-}
-.history-date { font-weight: 600; color: #333; }
-.history-time { font-size: 12px; color: #999; margin-top: 4px; }
-
-.export-options {
-  background: #e3f2fd;
-  border: 1px solid #bbdefb;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-.export-options h4 {
-  color: #1565c0;
-  margin-bottom: 0.5rem;
-  font-size: 14px;
-}
-.export-option {
-  background: white;
-  padding: 8px;
-  border-radius: 4px;
-  margin-bottom: 6px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.export-option button {
-  padding: 6px 12px;
-  font-size: 12px;
-  margin: 0;
-}
-
 .footer {
   text-align: center;
   margin-top: 2rem;
@@ -282,6 +308,29 @@ button {
   border-top: 1px solid #ddd;
   color: #999;
   font-size: 12px;
+}
+
+.intro-section {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+  border: 1px solid #bbdefb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.intro-section h3 {
+  color: #1565c0;
+  margin-bottom: 1rem;
+  font-size: 16px;
+}
+.intro-section p {
+  color: #666;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+.intro-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 </style>
 </head>
@@ -293,13 +342,43 @@ button {
     <p>בדיקה יומית מערכות</p>
   </div>
 
+  <div class="status-bar">
+    <div>
+      <span class="auto-save-indicator" id="autoSaveIndicator"></span>
+      <span class="status-info">סטטוס: <span id="saveStatus">מוכן</span></span>
+    </div>
+    <div class="status-time" id="lastSaveTime"></div>
+  </div>
+
   <div class="tabs">
-    <button class="tab active" onclick="switchTab(event, 'form')">📝 טופס יומי</button>
+    <button class="tab active" onclick="switchTab(event, 'start')">🏠 התחלה</button>
+    <button class="tab" onclick="switchTab(event, 'form')">📝 טופס יומי</button>
     <button class="tab" onclick="switchTab(event, 'summary')">📊 סיכום היום</button>
     <button class="tab" onclick="switchTab(event, 'history')">📋 היסטוריה</button>
   </div>
 
-  <div id="form" class="tab-content active">
+  <div id="start" class="tab-content active">
+    <div class="intro-section">
+      <h3>🎯 ברוכים הבאים לדוח היומי</h3>
+      <p>מערכת זו מאפשרת לך להשלים את הדוח בשלבים שונים לאורך היום:</p>
+      <ul style="margin-right: 1rem; margin-bottom: 1rem; line-height: 2;">
+        <li>✅ <strong>שמירה אוטומטית בטיוטה</strong> — כל שינוי נשמר למקום בטוח</li>
+        <li>✅ <strong>המשך מהמקום שעצרת</strong> — חזור בדיוק לאותה נקודה</li>
+        <li>✅ <strong>סיום עבודה</strong> — שמור דוח סופי לדיווח</li>
+      </ul>
+      <div class="intro-buttons">
+        <button class="btn-primary" onclick="switchTab({target: {classList: {add:()=>{}, remove:()=>{}}}, textContent: 'טופס יומי'}, 'form')">📝 התחל בדיקה חדשה</button>
+        <button class="btn-secondary" id="continueBtn" style="display: none;" onclick="continueDraft()">↩️ המשך מהמקום שעצרת</button>
+      </div>
+    </div>
+
+    <div id="draftsList" class="section" style="display: none;">
+      <h2>📋 טיוטות בעבודה</h2>
+      <div id="draftsContainer"></div>
+    </div>
+  </div>
+
+  <div id="form" class="tab-content">
     <div id="statusMessage" class="status-message"></div>
 
     <div class="section">
@@ -307,21 +386,21 @@ button {
       <div class="input-row">
         <div class="form-group">
           <label>מד ספיקה קו ראשי (FMQ112)</label>
-          <input type="number" step="0.1" id="FMQ112" placeholder="קוב״מ/שעה">
+          <input type="number" step="0.1" id="FMQ112" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
         </div>
         <div class="form-group">
           <label>מד ספיקה קו הושעיה (FMQ117)</label>
-          <input type="number" step="0.1" id="FMQ117" placeholder="קוב״מ/שעה">
+          <input type="number" step="0.1" id="FMQ117" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
         </div>
       </div>
       <div class="input-row">
         <div class="form-group">
           <label>pH (PHQ112)</label>
-          <input type="number" step="0.1" id="PHQ112" placeholder="pH">
+          <input type="number" step="0.1" id="PHQ112" placeholder="pH" oninput="triggerAutoSave()">
         </div>
         <div class="form-group">
           <label>מוליכות (ECQ122)</label>
-          <input type="number" step="0.1" id="ECQ122" placeholder="mS/cm">
+          <input type="number" step="0.1" id="ECQ122" placeholder="mS/cm" oninput="triggerAutoSave()">
         </div>
       </div>
     </div>
@@ -331,7 +410,7 @@ button {
       <div class="input-row">
         <div class="form-group">
           <label>מגוב גס 1</label>
-          <select id="coarse_filter_1">
+          <select id="coarse_filter_1" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -339,7 +418,7 @@ button {
         </div>
         <div class="form-group">
           <label>מגוב גס 2</label>
-          <select id="coarse_filter_2">
+          <select id="coarse_filter_2" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -349,7 +428,7 @@ button {
       <div class="input-row">
         <div class="form-group">
           <label>מצב מכולת גיבה</label>
-          <select id="trash_tank_status">
+          <select id="trash_tank_status" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="full">🔴 מלאה</option>
             <option value="empty">🟢 ריקה</option>
@@ -357,7 +436,7 @@ button {
         </div>
         <div class="form-group">
           <label>סטטוס פינוי מכולה</label>
-          <select id="trash_disposal_status">
+          <select id="trash_disposal_status" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="done">✓ בוצע</option>
             <option value="not_done">✗ לא בוצע</option>
@@ -371,7 +450,7 @@ button {
       <div class="input-row">
         <div class="form-group">
           <label>מלכודת חול 1</label>
-          <select id="sand_trap_1">
+          <select id="sand_trap_1" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -379,7 +458,7 @@ button {
         </div>
         <div class="form-group">
           <label>מלכודת חול 2</label>
-          <select id="sand_trap_2">
+          <select id="sand_trap_2" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -389,7 +468,7 @@ button {
       <div class="input-row">
         <div class="form-group">
           <label>מפוח 1</label>
-          <select id="blower_1">
+          <select id="blower_1" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -397,7 +476,7 @@ button {
         </div>
         <div class="form-group">
           <label>מפוח 2</label>
-          <select id="blower_2">
+          <select id="blower_2" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -407,11 +486,11 @@ button {
       <div class="input-row">
         <div class="form-group">
           <label>מד ספיקה מכונות משולבות (FMQ180)</label>
-          <input type="number" step="0.1" id="FMQ180" placeholder="קוב״מ/שעה">
+          <input type="number" step="0.1" id="FMQ180" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
         </div>
         <div class="form-group">
           <label>מד ספיקה בריכת ויסות (FMQ190)</label>
-          <input type="number" step="0.1" id="FMQ190" placeholder="קוב״מ/שעה">
+          <input type="number" step="0.1" id="FMQ190" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
         </div>
       </div>
     </div>
@@ -424,7 +503,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>גורף שומנים</label>
-            <select id="machine1_skimmer">
+            <select id="machine1_skimmer" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -432,7 +511,7 @@ button {
           </div>
           <div class="form-group">
             <label>משאבת שומנים</label>
-            <select id="machine1_fat_pump">
+            <select id="machine1_fat_pump" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -442,7 +521,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>מסוע חול</label>
-            <select id="machine1_sand_conveyor">
+            <select id="machine1_sand_conveyor" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -450,7 +529,7 @@ button {
           </div>
           <div class="form-group">
             <label>ניקיון מכונה משולבת</label>
-            <select id="machine1_cleaning">
+            <select id="machine1_cleaning" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="done">✓ בוצע</option>
               <option value="not_done">✗ לא בוצע</option>
@@ -464,7 +543,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>גורף שומנים</label>
-            <select id="machine2_skimmer">
+            <select id="machine2_skimmer" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -472,7 +551,7 @@ button {
           </div>
           <div class="form-group">
             <label>משאבת שומנים</label>
-            <select id="machine2_fat_pump">
+            <select id="machine2_fat_pump" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -482,7 +561,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>מסוע חול</label>
-            <select id="machine2_sand_conveyor">
+            <select id="machine2_sand_conveyor" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -490,7 +569,7 @@ button {
           </div>
           <div class="form-group">
             <label>ניקיון מכונה משולבת</label>
-            <select id="machine2_cleaning">
+            <select id="machine2_cleaning" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="done">✓ בוצע</option>
               <option value="not_done">✗ לא בוצע</option>
@@ -504,7 +583,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>גורף שומנים</label>
-            <select id="machine3_skimmer">
+            <select id="machine3_skimmer" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -512,7 +591,7 @@ button {
           </div>
           <div class="form-group">
             <label>משאבת שומנים</label>
-            <select id="machine3_fat_pump">
+            <select id="machine3_fat_pump" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -522,7 +601,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>מסוע חול</label>
-            <select id="machine3_sand_conveyor">
+            <select id="machine3_sand_conveyor" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -530,7 +609,7 @@ button {
           </div>
           <div class="form-group">
             <label>ניקיון מכונה משולבת</label>
-            <select id="machine3_cleaning">
+            <select id="machine3_cleaning" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="done">✓ בוצע</option>
               <option value="not_done">✗ לא בוצע</option>
@@ -545,7 +624,7 @@ button {
       <div class="input-row">
         <div class="form-group">
           <label>סינון עדין 1</label>
-          <select id="fine_filter_1">
+          <select id="fine_filter_1" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -553,7 +632,7 @@ button {
         </div>
         <div class="form-group">
           <label>סינון עדין 2</label>
-          <select id="fine_filter_2">
+          <select id="fine_filter_2" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -562,7 +641,7 @@ button {
       </div>
       <div class="form-group">
         <label>סטטוס מכולות</label>
-        <select id="filter_tanks_status">
+        <select id="filter_tanks_status" oninput="triggerAutoSave()">
           <option value="">בחר מצב</option>
           <option value="full">🔴 מלאה</option>
           <option value="empty">🟢 ריקה</option>
@@ -574,7 +653,7 @@ button {
       <h2>פחים מלאים</h2>
       <div class="form-group">
         <label>פינוי מכולות</label>
-        <select id="trash_disposal_status2">
+        <select id="trash_disposal_status2" oninput="triggerAutoSave()">
           <option value="">בחר מצב</option>
           <option value="done">✓ בוצע</option>
           <option value="not_done">✗ לא בוצע</option>
@@ -590,7 +669,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>מערבל תא אנאירובי (M-110-A)</label>
-            <select id="module1_mixer_an_a">
+            <select id="module1_mixer_an_a" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -598,7 +677,7 @@ button {
           </div>
           <div class="form-group">
             <label>מערבל תא אנאירובי (M-110-B)</label>
-            <select id="module1_mixer_an_b">
+            <select id="module1_mixer_an_b" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -608,7 +687,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>מערבל תא אנוקסי (M-120-A)</label>
-            <select id="module1_mixer_anox_a">
+            <select id="module1_mixer_anox_a" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -616,7 +695,7 @@ button {
           </div>
           <div class="form-group">
             <label>מערבל תא אנוקסי (M-120-B)</label>
-            <select id="module1_mixer_anox_b">
+            <select id="module1_mixer_anox_b" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -630,21 +709,21 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>חמצן רציף מודול A (AIT-117A)</label>
-            <input type="number" step="0.1" id="module1_oxygen_a" placeholder="mg/l">
+            <input type="number" step="0.1" id="module1_oxygen_a" placeholder="mg/l" oninput="triggerAutoSave()">
           </div>
           <div class="form-group">
             <label>חמצן מודול A (אימות ידני)</label>
-            <input type="number" step="0.1" id="module1_oxygen_a_manual" placeholder="mg/l">
+            <input type="number" step="0.1" id="module1_oxygen_a_manual" placeholder="mg/l" oninput="triggerAutoSave()">
           </div>
         </div>
         <div class="input-row">
           <div class="form-group">
             <label>חמצן רציף מודול B (AIT-117B)</label>
-            <input type="number" step="0.1" id="module1_oxygen_b" placeholder="mg/l">
+            <input type="number" step="0.1" id="module1_oxygen_b" placeholder="mg/l" oninput="triggerAutoSave()">
           </div>
           <div class="form-group">
             <label>חמצן מודול B (אימות ידני)</label>
-            <input type="number" step="0.1" id="module1_oxygen_b_manual" placeholder="mg/l">
+            <input type="number" step="0.1" id="module1_oxygen_b_manual" placeholder="mg/l" oninput="triggerAutoSave()">
           </div>
         </div>
       </div>
@@ -654,7 +733,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>משאבת RAS (P-230-A)</label>
-            <select id="module1_ras_pump_a">
+            <select id="module1_ras_pump_a" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -662,7 +741,7 @@ button {
           </div>
           <div class="form-group">
             <label>משאבת RAS (P-230-B)</label>
-            <select id="module1_ras_pump_b">
+            <select id="module1_ras_pump_b" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -672,11 +751,11 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>מד ספיקת RAS (FM-241)</label>
-            <input type="number" step="0.1" id="module1_ras_flow" placeholder="קוב״מ/שעה">
+            <input type="number" step="0.1" id="module1_ras_flow" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
           </div>
           <div class="form-group">
             <label>משאבת WAS (P-302-A)</label>
-            <select id="module1_was_pump_a">
+            <select id="module1_was_pump_a" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -685,7 +764,7 @@ button {
         </div>
         <div class="form-group">
           <label>משאבת WAS (P-302-B)</label>
-          <select id="module1_was_pump_b">
+          <select id="module1_was_pump_b" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -702,7 +781,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>מערבל תא אנאירובי (M-110-C)</label>
-            <select id="module2_mixer_an_c">
+            <select id="module2_mixer_an_c" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -710,7 +789,7 @@ button {
           </div>
           <div class="form-group">
             <label>מערבל תא אנאירובי (M-110-D)</label>
-            <select id="module2_mixer_an_d">
+            <select id="module2_mixer_an_d" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -720,7 +799,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>מערבל תא אנוקסי (M-120-C)</label>
-            <select id="module2_mixer_anox_c">
+            <select id="module2_mixer_anox_c" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -728,7 +807,7 @@ button {
           </div>
           <div class="form-group">
             <label>מערבל תא אנוקסי (M-120-D)</label>
-            <select id="module2_mixer_anox_d">
+            <select id="module2_mixer_anox_d" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -742,21 +821,21 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>חמצן רציף מודול A (AIT-117C)</label>
-            <input type="number" step="0.1" id="module2_oxygen_c" placeholder="mg/l">
+            <input type="number" step="0.1" id="module2_oxygen_c" placeholder="mg/l" oninput="triggerAutoSave()">
           </div>
           <div class="form-group">
             <label>חמצן מודול A (אימות ידני)</label>
-            <input type="number" step="0.1" id="module2_oxygen_c_manual" placeholder="mg/l">
+            <input type="number" step="0.1" id="module2_oxygen_c_manual" placeholder="mg/l" oninput="triggerAutoSave()">
           </div>
         </div>
         <div class="input-row">
           <div class="form-group">
             <label>חמצן רציף מודול B (AIT-117D)</label>
-            <input type="number" step="0.1" id="module2_oxygen_d" placeholder="mg/l">
+            <input type="number" step="0.1" id="module2_oxygen_d" placeholder="mg/l" oninput="triggerAutoSave()">
           </div>
           <div class="form-group">
             <label>חמצן מודול B (אימות ידני)</label>
-            <input type="number" step="0.1" id="module2_oxygen_d_manual" placeholder="mg/l">
+            <input type="number" step="0.1" id="module2_oxygen_d_manual" placeholder="mg/l" oninput="triggerAutoSave()">
           </div>
         </div>
       </div>
@@ -766,7 +845,7 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>משאבת RAS (P-230-C)</label>
-            <select id="module2_ras_pump_c">
+            <select id="module2_ras_pump_c" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -774,7 +853,7 @@ button {
           </div>
           <div class="form-group">
             <label>משאבת RAS (P-230-D)</label>
-            <select id="module2_ras_pump_d">
+            <select id="module2_ras_pump_d" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -784,11 +863,11 @@ button {
         <div class="input-row">
           <div class="form-group">
             <label>מד ספיקת RAS (FM-223)</label>
-            <input type="number" step="0.1" id="module2_ras_flow" placeholder="קוב״מ/שעה">
+            <input type="number" step="0.1" id="module2_ras_flow" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
           </div>
           <div class="form-group">
             <label>משאבת WAS (P-302-C)</label>
-            <select id="module2_was_pump_c">
+            <select id="module2_was_pump_c" oninput="triggerAutoSave()">
               <option value="">בחר מצב</option>
               <option value="ok">✓ תקין</option>
               <option value="not_ok">✗ לא תקין</option>
@@ -797,7 +876,7 @@ button {
         </div>
         <div class="form-group">
           <label>משאבת WAS (P-302-D)</label>
-          <select id="module2_was_pump_d">
+          <select id="module2_was_pump_d" oninput="triggerAutoSave()">
             <option value="">בחר מצב</option>
             <option value="ok">✓ תקין</option>
             <option value="not_ok">✗ לא תקין</option>
@@ -810,13 +889,13 @@ button {
       <h2>הערות כלליות</h2>
       <div class="form-group">
         <label>הערות</label>
-        <textarea id="notes" placeholder="רשום כאן כל הערה או תצפית חשובה" rows="4"></textarea>
+        <textarea id="notes" placeholder="רשום כאן כל הערה או תצפית חשובה" rows="4" oninput="triggerAutoSave()"></textarea>
       </div>
     </div>
 
     <div class="button-group">
-      <button class="btn-primary" onclick="saveReport()">💾 שמור דוח</button>
-      <button class="btn-secondary" onclick="clearForm()">🗑️ נקה הכל</button>
+      <button class="btn-success" onclick="finalizeDraft()">✅ סיום עבודה - שמור דוח סופי</button>
+      <button class="btn-secondary" onclick="continueLater()">⏸️ המשך מאוחר יותר</button>
     </div>
   </div>
 
@@ -829,89 +908,106 @@ button {
   </div>
 
   <div class="footer">
-    <p>דוח יומי - נתונים נשמרים בטלפון שלך | גרסה 2.0</p>
+    <p>דוח יומי עם שמירה בשלבים | גרסה 3.0</p>
   </div>
 </div>
 
 <!-- Modal -->
-<div id="deleteModal" class="modal">
+<div id="finalizeModal" class="modal">
   <div class="modal-content">
-    <div class="modal-header">🗑️ מחיקת היסטוריה</div>
+    <div class="modal-header">✅ סיום עבודה</div>
     <div class="modal-body">
-      <p>האם אתה בטוח שרוצה למחוק את כל ההיסטוריה?</p>
-      <p style="font-size: 12px; color: #f44336; margin-top: 10px;">⚠️ דוחות מהשבוע האחרון לא יחקו</p>
+      <p>האם אתה בטוח שכל הנתונים מלאים ותוכן שמור סופי?</p>
+      <p style="font-size: 12px; color: #f44336; margin-top: 10px;">⚠️ אחרי סיום, לא תוכל לעזור לשנות את הדוח</p>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeDeleteModal()">ביטול</button>
-      <button class="btn-danger" onclick="confirmDelete()">מחק</button>
+      <button class="btn-secondary" onclick="closeModal()">ביטול</button>
+      <button class="btn-success" onclick="confirmFinalize()">סיים וישמור</button>
     </div>
   </div>
 </div>
 
 <script>
 const FIELD_LABELS = {
-  'FMQ112': 'מד ספיקה קו ראשי',
-  'FMQ117': 'מד ספיקה קו הושעיה',
-  'PHQ112': 'pH',
-  'ECQ122': 'מוליכות',
-  'coarse_filter_1': 'מגוב גס 1',
-  'coarse_filter_2': 'מגוב גס 2',
-  'trash_tank_status': 'מצב מכולת גיבה',
-  'trash_disposal_status': 'סטטוס פינוי מכולה',
-  'sand_trap_1': 'מלכודת חול 1',
-  'sand_trap_2': 'מלכודת חול 2',
-  'blower_1': 'מפוח 1',
-  'blower_2': 'מפוח 2',
-  'FMQ180': 'ספיקה מכונות משולבות',
-  'FMQ190': 'ספיקה בריכת ויסות',
-  'machine1_skimmer': 'מכונה 1 - גורף שומנים',
-  'machine1_fat_pump': 'מכונה 1 - משאבת שומנים',
-  'machine1_sand_conveyor': 'מכונה 1 - מסוע חול',
-  'machine1_cleaning': 'מכונה 1 - ניקיון',
-  'machine2_skimmer': 'מכונה 2 - גורף שומנים',
-  'machine2_fat_pump': 'מכונה 2 - משאבת שומנים',
-  'machine2_sand_conveyor': 'מכונה 2 - מסוע חול',
-  'machine2_cleaning': 'מכונה 2 - ניקיון',
-  'machine3_skimmer': 'מכונה 3 - גורף שומנים',
-  'machine3_fat_pump': 'מכונה 3 - משאבת שומנים',
-  'machine3_sand_conveyor': 'מכונה 3 - מסוע חול',
-  'machine3_cleaning': 'מכונה 3 - ניקיון',
-  'fine_filter_1': 'סינון עדין 1',
-  'fine_filter_2': 'סינון עדין 2',
-  'filter_tanks_status': 'סטטוס מכולות סינון',
-  'trash_disposal_status2': 'פינוי פחים מלאים',
-  'module1_mixer_an_a': 'מודול 1 - מערבל אנאירובי A',
-  'module1_mixer_an_b': 'מודול 1 - מערבל אנאירובי B',
-  'module1_mixer_anox_a': 'מודול 1 - מערבל אנוקסי A',
-  'module1_mixer_anox_b': 'מודול 1 - מערבל אנוקסי B',
-  'module1_oxygen_a': 'מודול 1 - חמצן A רציף',
-  'module1_oxygen_a_manual': 'מודול 1 - חמצן A ידני',
-  'module1_oxygen_b': 'מודול 1 - חמצן B רציף',
-  'module1_oxygen_b_manual': 'מודול 1 - חמצן B ידני',
-  'module1_ras_pump_a': 'מודול 1 - משאבת RAS A',
-  'module1_ras_pump_b': 'מודול 1 - משאבת RAS B',
-  'module1_ras_flow': 'מודול 1 - ספיקת RAS',
-  'module1_was_pump_a': 'מודול 1 - משאבת WAS A',
-  'module1_was_pump_b': 'מודול 1 - משאבת WAS B',
-  'module2_mixer_an_c': 'מודול 2 - מערבל אנאירובי C',
-  'module2_mixer_an_d': 'מודול 2 - מערבל אנאירובי D',
-  'module2_mixer_anox_c': 'מודול 2 - מערבל אנוקסי C',
-  'module2_mixer_anox_d': 'מודול 2 - מערבל אנוקסי D',
-  'module2_oxygen_c': 'מודול 2 - חמצן C רציף',
-  'module2_oxygen_c_manual': 'מודול 2 - חמצן C ידני',
-  'module2_oxygen_d': 'מודול 2 - חמצן D רציף',
-  'module2_oxygen_d_manual': 'מודול 2 - חמצן D ידני',
-  'module2_ras_pump_c': 'מודול 2 - משאבת RAS C',
-  'module2_ras_pump_d': 'מודול 2 - משאבת RAS D',
-  'module2_ras_flow': 'מודול 2 - ספיקת RAS',
-  'module2_was_pump_c': 'מודול 2 - משאבת WAS C',
-  'module2_was_pump_d': 'מודול 2 - משאבת WAS D',
-  'notes': 'הערות'
+  'FMQ112': 'מד ספיקה קו ראשי', 'FMQ117': 'מד ספיקה קו הושעיה', 'PHQ112': 'pH', 'ECQ122': 'מוליכות',
+  'coarse_filter_1': 'מגוב גס 1', 'coarse_filter_2': 'מגוב גס 2', 'trash_tank_status': 'מצב מכולת גיבה',
+  'trash_disposal_status': 'סטטוס פינוי מכולה', 'sand_trap_1': 'מלכודת חול 1', 'sand_trap_2': 'מלכודת חול 2',
+  'blower_1': 'מפוח 1', 'blower_2': 'מפוח 2', 'FMQ180': 'ספיקה מכונות משולבות', 'FMQ190': 'ספיקה בריכת ויסות',
+  'machine1_skimmer': 'מכונה 1 - גורף שומנים', 'machine1_fat_pump': 'מכונה 1 - משאבת שומנים',
+  'machine1_sand_conveyor': 'מכונה 1 - מסוע חול', 'machine1_cleaning': 'מכונה 1 - ניקיון',
+  'machine2_skimmer': 'מכונה 2 - גורף שומנים', 'machine2_fat_pump': 'מכונה 2 - משאבת שומנים',
+  'machine2_sand_conveyor': 'מכונה 2 - מסוע חול', 'machine2_cleaning': 'מכונה 2 - ניקיון',
+  'machine3_skimmer': 'מכונה 3 - גורף שומנים', 'machine3_fat_pump': 'מכונה 3 - משאבת שומנים',
+  'machine3_sand_conveyor': 'מכונה 3 - מסוע חול', 'machine3_cleaning': 'מכונה 3 - ניקיון',
+  'fine_filter_1': 'סינון עדין 1', 'fine_filter_2': 'סינון עדין 2', 'filter_tanks_status': 'סטטוס מכולות סינון',
+  'trash_disposal_status2': 'פינוי פחים מלאים', 'module1_mixer_an_a': 'מודול 1 - מערבל אנאירובי A',
+  'module1_mixer_an_b': 'מודול 1 - מערבל אנאירובי B', 'module1_mixer_anox_a': 'מודול 1 - מערבל אנוקסי A',
+  'module1_mixer_anox_b': 'מודול 1 - מערבל אנוקסי B', 'module1_oxygen_a': 'מודול 1 - חמצן A רציף',
+  'module1_oxygen_a_manual': 'מודול 1 - חמצן A ידני', 'module1_oxygen_b': 'מודול 1 - חמצן B רציף',
+  'module1_oxygen_b_manual': 'מודול 1 - חמצן B ידני', 'module1_ras_pump_a': 'מודול 1 - משאבת RAS A',
+  'module1_ras_pump_b': 'מודול 1 - משאבת RAS B', 'module1_ras_flow': 'מודול 1 - ספיקת RAS',
+  'module1_was_pump_a': 'מודול 1 - משאבת WAS A', 'module1_was_pump_b': 'מודול 1 - משאבת WAS B',
+  'module2_mixer_an_c': 'מודול 2 - מערבל אנאירובי C', 'module2_mixer_an_d': 'מודול 2 - מערבל אנאירובי D',
+  'module2_mixer_anox_c': 'מודול 2 - מערבל אנוקסי C', 'module2_mixer_anox_d': 'מודול 2 - מערבל אנוקסי D',
+  'module2_oxygen_c': 'מודול 2 - חמצן C רציף', 'module2_oxygen_c_manual': 'מודול 2 - חמצן C ידני',
+  'module2_oxygen_d': 'מודול 2 - חמצן D רציף', 'module2_oxygen_d_manual': 'מודול 2 - חמצן D ידני',
+  'module2_ras_pump_c': 'מודול 2 - משאבת RAS C', 'module2_ras_pump_d': 'מודול 2 - משאבת RAS D',
+  'module2_ras_flow': 'מודול 2 - ספיקת RAS', 'module2_was_pump_c': 'מודול 2 - משאבת WAS C',
+  'module2_was_pump_d': 'מודול 2 - משאבת WAS D', 'notes': 'הערות'
 };
 
+let autoSaveTimer;
+let hasChanges = false;
+
 function initializeApp() {
-  updateSummaryTab();
-  updateHistoryTab();
+  checkForDrafts();
+  updateLastSaveTime();
+}
+
+function checkForDrafts() {
+  const today = new Date().toISOString().split('T')[0];
+  const draft = localStorage.getItem(`draft_${today}`);
+  
+  if (draft) {
+    document.getElementById('continueBtn').style.display = 'block';
+    updateDraftsList();
+    document.getElementById('draftsList').style.display = 'block';
+  }
+}
+
+function updateDraftsList() {
+  let allDrafts = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('draft_')) {
+      const data = JSON.parse(localStorage.getItem(key));
+      allDrafts.push({date: key.replace('draft_', ''), data});
+    }
+  }
+  
+  let html = '';
+  allDrafts.reverse().forEach(draft => {
+    const dateObj = new Date(draft.date);
+    const formatted = dateObj.toLocaleDateString('he-IL');
+    const time = draft.data.lastSave ? new Date(draft.data.lastSave).toLocaleTimeString('he-IL') : 'לא מצוין';
+    
+    html += `
+      <div class="draft-card">
+        <div class="draft-header">
+          <div>
+            <div class="draft-date">${formatted}</div>
+            <div class="draft-time">שמור אחרון: ${time}</div>
+          </div>
+          <div class="draft-actions">
+            <button class="btn-secondary" onclick="loadDraft('${draft.date}')">טען</button>
+            <button class="btn-danger" onclick="deleteDraft('${draft.date}')">מחק</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  document.getElementById('draftsContainer').innerHTML = html;
 }
 
 function switchTab(event, tabName) {
@@ -923,9 +1019,6 @@ function switchTab(event, tabName) {
   
   event.target.classList.add('active');
   document.getElementById(tabName).classList.add('active');
-  
-  if (tabName === 'summary') updateSummaryTab();
-  if (tabName === 'history') updateHistoryTab();
 }
 
 function getFormData() {
@@ -937,32 +1030,126 @@ function getFormData() {
   return {
     date: today,
     timestamp: new Date().toISOString(),
+    lastSave: new Date().toISOString(),
     ...formElements
   };
 }
 
-function saveReport() {
+function triggerAutoSave() {
+  hasChanges = true;
+  clearTimeout(autoSaveTimer);
+  updateSaveStatus('שמירה...', 'saving');
+  
+  autoSaveTimer = setTimeout(() => {
+    autoSave();
+  }, 2000);
+}
+
+function autoSave() {
   const data = getFormData();
-  if (!data.date) {
-    showMessage('שגיאה בשמירה', 'error');
+  const today = new Date().toISOString().split('T')[0];
+  
+  localStorage.setItem(`draft_${today}`, JSON.stringify(data));
+  
+  updateSaveStatus('נשמר', 'saved');
+  updateLastSaveTime();
+  hasChanges = false;
+  checkForDrafts();
+  
+  setTimeout(() => {
+    updateSaveStatus('מוכן', 'default');
+  }, 2000);
+}
+
+function updateSaveStatus(text, status) {
+  document.getElementById('saveStatus').textContent = text;
+  const indicator = document.getElementById('autoSaveIndicator');
+  indicator.className = 'auto-save-indicator';
+  if (status === 'saving') indicator.classList.add('saving');
+  if (status === 'saved') indicator.classList.add('saved');
+}
+
+function updateLastSaveTime() {
+  const today = new Date().toISOString().split('T')[0];
+  const draft = JSON.parse(localStorage.getItem(`draft_${today}`) || '{}');
+  
+  if (draft.lastSave) {
+    const time = new Date(draft.lastSave).toLocaleTimeString('he-IL');
+    document.getElementById('lastSaveTime').textContent = `עדכון אחרון: ${time}`;
+  }
+}
+
+function continueDraft() {
+  const today = new Date().toISOString().split('T')[0];
+  loadDraft(today);
+}
+
+function loadDraft(dateStr) {
+  const draft = JSON.parse(localStorage.getItem(`draft_${dateStr}`));
+  
+  if (!draft) {
+    showMessage('לא נמצאה טיוטה', 'error');
     return;
   }
   
+  Object.keys(draft).forEach(key => {
+    if (key !== 'date' && key !== 'timestamp' && key !== 'lastSave') {
+      const elem = document.getElementById(key);
+      if (elem) elem.value = draft[key];
+    }
+  });
+  
+  switchTab({target: {classList: {add:()=>{}, remove:()=>{}}}}, 'form');
+  showMessage('✓ טיוטה טעונה בהצלחה', 'success');
+}
+
+function continueLater() {
+  autoSave();
+  showMessage('✓ הטיוטה נשמרה. תוכל להמשיך מאוחר יותר', 'success');
+}
+
+function finalizeDraft() {
+  document.getElementById('finalizeModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('finalizeModal').classList.remove('show');
+}
+
+function confirmFinalize() {
+  const data = getFormData();
+  const today = new Date().toISOString().split('T')[0];
+  
+  // שמור כדוח סופי
   let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  const todayIndex = reports.findIndex(r => r.date === data.date);
+  const todayIndex = reports.findIndex(r => r.date === today);
   if (todayIndex >= 0) {
     reports[todayIndex] = data;
   } else {
     reports.push(data);
   }
-  
   localStorage.setItem('daily_reports', JSON.stringify(reports));
-  showMessage('✓ הדוח נשמר בהצלחה!', 'success');
+  
+  // מחק את הטיוטה
+  localStorage.removeItem(`draft_${today}`);
+  
+  closeModal();
+  showMessage('✓ הדוח נשמר בהצלחה וטיוטה נמחקה', 'success');
+  
   setTimeout(() => {
     clearForm();
-    updateSummaryTab();
-    updateHistoryTab();
-  }, 1000);
+    checkForDrafts();
+    switchTab({target: {classList: {add:()=>{}, remove:()=>{}}}}, 'start');
+  }, 1500);
+}
+
+function deleteDraft(dateStr) {
+  if (confirm('האם בטוח שרוצה למחוק את הטיוטה?')) {
+    localStorage.removeItem(`draft_${dateStr}`);
+    updateDraftsList();
+    checkForDrafts();
+    showMessage('✓ טיוטה נמחקה', 'success');
+  }
 }
 
 function clearForm() {
@@ -978,251 +1165,6 @@ function showMessage(msg, type) {
   setTimeout(() => {
     msgDiv.className = 'status-message';
   }, 4000);
-}
-
-function exportToCSV(data, filename) {
-  const headers = Object.keys(data[0]);
-  const csvHeaders = headers.map(h => FIELD_LABELS[h] || h);
-  const rows = data.map(r => headers.map(h => r[h] || '').map(cell => `"${cell}"`).join(','));
-  
-  const csv = [csvHeaders.join(','), ...rows].join('\n');
-  
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
-}
-
-function generateWhatsAppLink(filename) {
-  const message = `דוח יומי מ-${new Date().toLocaleDateString('he-IL')}: ${filename}`;
-  return `https://wa.me/?text=${encodeURIComponent(message)}`;
-}
-
-function updateSummaryTab() {
-  let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  const today = new Date().toISOString().split('T')[0];
-  const todayReport = reports.find(r => r.date === today);
-  
-  let html = '';
-  
-  if (todayReport) {
-    // ספור בדיקות
-    let checkFields = Object.keys(todayReport).filter(k => 
-      todayReport[k] === 'ok' || todayReport[k] === 'not_ok'
-    );
-    let okCount = checkFields.filter(k => todayReport[k] === 'ok').length;
-    let notOkCount = checkFields.filter(k => todayReport[k] === 'not_ok').length;
-    
-    // בנה סיכום
-    html += `
-      <div class="summary-grid">
-        <div class="summary-card ok">
-          <div class="summary-label">בדיקות תקינות</div>
-          <div class="summary-value">${okCount}</div>
-        </div>
-        <div class="summary-card ${notOkCount > 0 ? 'error' : 'ok'}">
-          <div class="summary-label">בדיקות לא תקינות</div>
-          <div class="summary-value">${notOkCount}</div>
-        </div>
-      </div>
-    `;
-    
-    // רשום בעיות
-    if (notOkCount > 0) {
-      html += '<div class="issues-list">';
-      html += '<h4>🔴 בדיקות שדורשות התייחסות:</h4>';
-      
-      checkFields.forEach(fieldId => {
-        if (todayReport[fieldId] === 'not_ok') {
-          const label = FIELD_LABELS[fieldId] || fieldId;
-          html += `<div class="issue-item">• ${label}</div>`;
-        }
-      });
-      
-      html += '</div>';
-    }
-    
-    // מכולות
-    html += '<div class="section">';
-    html += '<h2>📦 סטטוס מכולות</h2>';
-    if (todayReport.trash_tank_status) {
-      html += `<p><strong>מכולת גיבה:</strong> ${todayReport.trash_tank_status === 'full' ? '🔴 מלאה' : '🟢 ריקה'}</p>`;
-    }
-    if (todayReport.filter_tanks_status) {
-      html += `<p><strong>מכולות סינון:</strong> ${todayReport.filter_tanks_status === 'full' ? '🔴 מלאה' : '🟢 ריקה'}</p>`;
-    }
-    html += '</div>';
-    
-    // הערות כלליות
-    if (todayReport.notes) {
-      html += `
-        <div class="section">
-          <h2>📝 הערות כלליות</h2>
-          <p>${todayReport.notes}</p>
-        </div>
-      `;
-    }
-    
-    // ייצוא יומי
-    html += `
-      <div class="export-options">
-        <h4>📥 אפשרויות ייצוא</h4>
-        <div class="export-option">
-          <button class="btn-secondary" onclick="exportTodayCSV()">💾 CSV של היום</button>
-        </div>
-        <div class="export-option">
-          <button class="btn-secondary" onclick="shareWhatsApp('today')">💬 שלח ב-WhatsApp</button>
-        </div>
-        <div class="export-option">
-          <button class="btn-secondary" onclick="shareEmail('today')">📧 שלח במייל</button>
-        </div>
-      </div>
-    `;
-    
-  } else {
-    html += `<div style="background: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 1rem; border-radius: 8px;">
-      <strong>⚠️ עדיין לא הוזן דוח לאתה</strong><br>
-      <small>חזור לטופס הבדיקה ומלא את הפרטים</small>
-    </div>`;
-  }
-  
-  document.getElementById('summaryContent').innerHTML = html;
-}
-
-function updateHistoryTab() {
-  let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  
-  let html = '<div class="export-options">';
-  html += '<h4>📊 ייצוא היסטוריה</h4>';
-  html += '<div class="export-option">';
-  html += '<button class="btn-secondary" onclick="exportAllHistory()">💾 הורד הכל כ-CSV</button>';
-  html += '</div>';
-  html += '<div class="export-option">';
-  html += '<button class="btn-warning" onclick="openDeleteModal()">🗑️ מחק היסטוריה</button>';
-  html += '</div>';
-  html += '</div>';
-  
-  if (reports.length === 0) {
-    html += `<div style="text-align: center; padding: 2rem; color: #999;">
-      <div style="font-size: 48px; margin-bottom: 1rem;">📭</div>
-      <p>אין היסטוריה עדיין</p>
-    </div>`;
-  } else {
-    html += '<div style="margin-top: 1.5rem;">';
-    reports.slice().reverse().forEach((report, idx) => {
-      const dateObj = new Date(report.date);
-      const formatted = dateObj.toLocaleDateString('he-IL');
-      const time = report.timestamp ? new Date(report.timestamp).toLocaleTimeString('he-IL') : 'לא מצוין';
-      
-      html += `
-        <div class="history-item">
-          <div class="history-date">${formatted}</div>
-          <div class="history-time">${time}</div>
-          ${report.notes ? `<div style="font-size: 13px; color: #666; margin-top: 4px;">הערות: ${report.notes}</div>` : ''}
-          <div style="margin-top: 8px;">
-            <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="exportSingleDay('${report.date}')">הורד</button>
-            <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="shareWhatsApp('day', '${report.date}')">WhatsApp</button>
-          </div>
-        </div>
-      `;
-    });
-    html += '</div>';
-  }
-  
-  document.getElementById('historyContent').innerHTML = html;
-}
-
-function exportTodayCSV() {
-  let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  const today = new Date().toISOString().split('T')[0];
-  const todayReport = reports.find(r => r.date === today);
-  
-  if (!todayReport) {
-    showMessage('אין דוח לאתה', 'error');
-    return;
-  }
-  
-  exportToCSV([todayReport], `דוח_יומי_${today}.csv`);
-  showMessage('✓ קובץ הורד בהצלחה', 'success');
-}
-
-function exportSingleDay(dateStr) {
-  let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  const report = reports.find(r => r.date === dateStr);
-  
-  if (!report) {
-    showMessage('לא נמצא דוח', 'error');
-    return;
-  }
-  
-  exportToCSV([report], `דוח_יומי_${dateStr}.csv`);
-  showMessage('✓ קובץ הורד בהצלחה', 'success');
-}
-
-function exportAllHistory() {
-  let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  
-  if (reports.length === 0) {
-    showMessage('אין היסטוריה', 'error');
-    return;
-  }
-  
-  exportToCSV(reports, `דוח_היסטוריה_${new Date().toISOString().split('T')[0]}.csv`);
-  showMessage('✓ כל ההיסטוריה הורדה בהצלחה', 'success');
-}
-
-function openDeleteModal() {
-  document.getElementById('deleteModal').classList.add('show');
-}
-
-function closeDeleteModal() {
-  document.getElementById('deleteModal').classList.remove('show');
-}
-
-function confirmDelete() {
-  let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  
-  // לא מחק דוחות מהשבוע האחרון
-  const weekAgo = new Date();
-  weekAgo.setDate(weekAgo.getDate() - 7);
-  const weekAgoStr = weekAgo.toISOString().split('T')[0];
-  
-  reports = reports.filter(r => r.date < weekAgoStr);
-  
-  localStorage.setItem('daily_reports', JSON.stringify(reports));
-  closeDeleteModal();
-  showMessage('✓ היסטוריה עתיקה נמחקה (שמור דוחות מהשבוע האחרון)', 'success');
-  updateHistoryTab();
-}
-
-function shareWhatsApp(type, dateStr = null) {
-  let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  let data;
-  let filename;
-  
-  if (type === 'today') {
-    const today = new Date().toISOString().split('T')[0];
-    data = reports.filter(r => r.date === today);
-    filename = `דוח_יומי_${today}.csv`;
-  } else if (type === 'day') {
-    data = reports.filter(r => r.date === dateStr);
-    filename = `דוח_יומי_${dateStr}.csv`;
-  }
-  
-  if (data.length === 0) {
-    showMessage('אין דוח', 'error');
-    return;
-  }
-  
-  const message = `דוח מט"ש רני סוללים - ${new Date().toLocaleDateString('he-IL')}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(message)}`);
-  showMessage('💬 פתח WhatsApp - דיוק את הקובץ CSV בעצמך', 'success');
-}
-
-function shareEmail(type) {
-  const message = 'דוח מט"ש רני סוללים';
-  window.open(`mailto:?subject=${encodeURIComponent(message)}&body=${encodeURIComponent('הצרף את קובץ ה-CSV כאן')}`);
 }
 
 initializeApp();
