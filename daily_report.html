@@ -61,9 +61,11 @@ body {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
 }
 .tab {
   flex: 1;
+  min-width: 100px;
   padding: 12px 16px;
   text-align: center;
   cursor: pointer;
@@ -330,18 +332,18 @@ button {
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab(event, 'start')">🏠 התחלה</button>
-    <button class="tab" onclick="switchTab(event, 'form')">📝 טופס יומי</button>
-    <button class="tab" onclick="switchTab(event, 'summary')">📊 סיכום היום</button>
+    <button class="tab" onclick="switchTab(event, 'form')">📝 טופס</button>
+    <button class="tab" onclick="switchTab(event, 'summary')">📊 סיכום</button>
     <button class="tab" onclick="switchTab(event, 'history')">📋 היסטוריה</button>
   </div>
 
   <div id="start" class="tab-content active">
     <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%); border: 1px solid #bbdefb; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
-      <h3 style="color: #1565c0; margin-bottom: 1rem; font-size: 16px;">🎯 ברוכים הבאים לדוח היומי</h3>
-      <p style="color: #666; margin-bottom: 1rem; line-height: 1.6;">מערכת זו מאפשרת לך להשלים את הדוח בשלבים שונים לאורך היום.</p>
+      <h3 style="color: #1565c0; margin-bottom: 1rem; font-size: 16px;">🎯 ברוכים הבאים</h3>
+      <p style="color: #666; margin-bottom: 1rem; line-height: 1.6;">השלם את הדוח בשלבים לאורך היום.</p>
       <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
         <button class="btn-primary" onclick="switchTabDirect('form')">📝 התחל בדיקה חדשה</button>
-        <button class="btn-secondary" id="continueBtn" style="display: none;" onclick="continueDraft()">↩️ המשך מהמקום שעצרת</button>
+        <button class="btn-secondary" id="continueBtn" style="display: none;" onclick="continueDraft()">↩️ המשך</button>
       </div>
     </div>
 
@@ -433,7 +435,465 @@ button {
     </div>
 
     <div class="section">
-      <h2>חלפת פחים</h2>
+      <h2>מלכודת חול</h2>
+      <div class="input-row">
+        <div class="form-group">
+          <label>מלכודת חול 1</label>
+          <select id="sand_trap_1" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>מלכודת חול 2</label>
+          <select id="sand_trap_2" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>מפוח 1</label>
+          <select id="blower_1" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>מפוח 2</label>
+          <select id="blower_2" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>מד ספיקה מכונות משולבות (FMQ180)</label>
+          <input type="number" step="0.1" id="FMQ180" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+        </div>
+        <div class="form-group">
+          <label>מד ספיקה בריכת ויסות (FMQ190)</label>
+          <input type="number" step="0.1" id="FMQ190" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>מכונות משולבות</h2>
+      
+      <div style="border-right: 4px solid #667eea; padding-right: 1rem; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 16px; margin-bottom: 1rem;">🔧 מכונה משולבת 1</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>גורף שומנים</label>
+            <select id="machine1_skimmer" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>משאבת שומנים</label>
+            <select id="machine1_fat_pump" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>מסוע חול</label>
+            <select id="machine1_sand_conveyor" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ניקיון מכונה</label>
+            <select id="machine1_cleaning" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="done">✓ בוצע</option>
+              <option value="not_done">✗ לא בוצע</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-right: 4px solid #667eea; padding-right: 1rem; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 16px; margin-bottom: 1rem;">🔧 מכונה משולבת 2</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>גורף שומנים</label>
+            <select id="machine2_skimmer" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>משאבת שומנים</label>
+            <select id="machine2_fat_pump" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>מסוע חול</label>
+            <select id="machine2_sand_conveyor" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ניקיון מכונה</label>
+            <select id="machine2_cleaning" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="done">✓ בוצע</option>
+              <option value="not_done">✗ לא בוצע</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-right: 4px solid #667eea; padding-right: 1rem;">
+        <h3 style="font-size: 16px; margin-bottom: 1rem;">🔧 מכונה משולבת 3</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>גורף שומנים</label>
+            <select id="machine3_skimmer" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>משאבת שומנים</label>
+            <select id="machine3_fat_pump" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>מסוע חול</label>
+            <select id="machine3_sand_conveyor" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ניקיון מכונה</label>
+            <select id="machine3_cleaning" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="done">✓ בוצע</option>
+              <option value="not_done">✗ לא בוצע</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>סינון עדין</h2>
+      <div class="input-row">
+        <div class="form-group">
+          <label>סינון עדין 1</label>
+          <select id="fine_filter_1" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>סינון עדין 2</label>
+          <select id="fine_filter_2" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>סטטוס מכולות</label>
+        <select id="filter_tanks_status" oninput="triggerAutoSave()">
+          <option value="">בחר מצב</option>
+          <option value="full">🔴 מלאה</option>
+          <option value="empty">🟢 ריקה</option>
+        </select>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>פחים מלאים</h2>
+      <div class="form-group">
+        <label>פינוי מכולות</label>
+        <select id="trash_disposal_status2" oninput="triggerAutoSave()">
+          <option value="">בחר מצב</option>
+          <option value="done">✓ בוצע</option>
+          <option value="not_done">✗ לא בוצע</option>
+        </select>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>מודול 1</h2>
+      
+      <div style="background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 14px; margin-bottom: 1rem; color: #333;">מערבלים</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>מערבל אנאירובי (M-110-A)</label>
+            <select id="module1_mixer_an_a" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>מערבל אנאירובי (M-110-B)</label>
+            <select id="module1_mixer_an_b" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>מערבל אנוקסי (M-120-A)</label>
+            <select id="module1_mixer_anox_a" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>מערבל אנוקסי (M-120-B)</label>
+            <select id="module1_mixer_anox_b" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 14px; margin-bottom: 1rem; color: #333;">חמצן</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>חמצן רציף (AIT-117A)</label>
+            <input type="number" step="0.1" id="module1_oxygen_a" placeholder="mg/l" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>חמצן ידני (A)</label>
+            <input type="number" step="0.1" id="module1_oxygen_a_manual" placeholder="mg/l" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>חמצן רציף (AIT-117B)</label>
+            <input type="number" step="0.1" id="module1_oxygen_b" placeholder="mg/l" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>חמצן ידני (B)</label>
+            <input type="number" step="0.1" id="module1_oxygen_b_manual" placeholder="mg/l" oninput="triggerAutoSave()">
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #f9f9f9; padding: 1rem; border-radius: 8px;">
+        <h3 style="font-size: 14px; margin-bottom: 1rem; color: #333;">משאבות</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>משאבת RAS (P-230-A)</label>
+            <select id="module1_ras_pump_a" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>משאבת RAS (P-230-B)</label>
+            <select id="module1_ras_pump_b" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>ספיקת RAS (FM-241)</label>
+            <input type="number" step="0.1" id="module1_ras_flow" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>משאבת WAS (P-302-A)</label>
+            <select id="module1_was_pump_a" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>משאבת WAS (P-302-B)</label>
+          <select id="module1_was_pump_b" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>מודול 2</h2>
+      
+      <div style="background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 14px; margin-bottom: 1rem; color: #333;">מערבלים</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>מערבל אנאירובי (M-110-C)</label>
+            <select id="module2_mixer_an_c" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>מערבל אנאירובי (M-110-D)</label>
+            <select id="module2_mixer_an_d" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>מערבל אנוקסי (M-120-C)</label>
+            <select id="module2_mixer_anox_c" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>מערבל אנוקסי (M-120-D)</label>
+            <select id="module2_mixer_anox_d" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #f9f9f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 14px; margin-bottom: 1rem; color: #333;">חמצן</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>חמצן רציף (AIT-117C)</label>
+            <input type="number" step="0.1" id="module2_oxygen_c" placeholder="mg/l" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>חמצן ידני (C)</label>
+            <input type="number" step="0.1" id="module2_oxygen_c_manual" placeholder="mg/l" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>חמצן רציף (AIT-117D)</label>
+            <input type="number" step="0.1" id="module2_oxygen_d" placeholder="mg/l" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>חמצן ידני (D)</label>
+            <input type="number" step="0.1" id="module2_oxygen_d_manual" placeholder="mg/l" oninput="triggerAutoSave()">
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #f9f9f9; padding: 1rem; border-radius: 8px;">
+        <h3 style="font-size: 14px; margin-bottom: 1rem; color: #333;">משאבות</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>משאבת RAS (P-230-C)</label>
+            <select id="module2_ras_pump_c" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>משאבת RAS (P-230-D)</label>
+            <select id="module2_ras_pump_d" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>ספיקת RAS (FM-223)</label>
+            <input type="number" step="0.1" id="module2_ras_flow" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>משאבת WAS (P-302-C)</label>
+            <select id="module2_was_pump_c" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>משאבת WAS (P-302-D)</label>
+          <select id="module2_was_pump_d" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>♻️ חלפת פחים</h2>
       <div class="input-row">
         <div class="form-group">
           <div class="counter-box">
@@ -464,7 +924,7 @@ button {
     </div>
 
     <div class="section">
-      <h2>הערות כלליות</h2>
+      <h2>📝 הערות כלליות</h2>
       <div class="form-group">
         <label>הערות</label>
         <textarea id="notes" placeholder="רשום כאן כל הערה או תצפית חשובה" rows="4" oninput="triggerAutoSave()"></textarea>
@@ -489,7 +949,7 @@ button {
   </div>
 
   <div class="footer">
-    <p>דוח יומי עם שמירה בשלבים | גרסה 4.0</p>
+    <p>דוח יומי עם שמירה בשלבים | גרסה 4.1</p>
   </div>
 </div>
 
@@ -498,8 +958,8 @@ button {
   <div class="modal-content">
     <div class="modal-header">✅ סיום עבודה</div>
     <div class="modal-body">
-      <p>האם אתה בטוח שכל הנתונים מלאים ותוכן שמור סופי?</p>
-      <p style="font-size: 12px; color: #f44336; margin-top: 10px;">⚠️ אחרי סיום, לא תוכל לעזור לשנות את הדוח</p>
+      <p>האם אתה בטוח שכל הנתונים מלאים?</p>
+      <p style="font-size: 12px; color: #f44336; margin-top: 10px;">⚠️ אחרי סיום, לא תוכל לשנות את הדוח</p>
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeModal()">ביטול</button>
@@ -509,16 +969,7 @@ button {
 </div>
 
 <script>
-const FIELD_LABELS = {
-  'reporter_name': 'שם ממלא הדוח',
-  'FMQ112': 'מד ספיקה קו ראשי', 'FMQ117': 'מד ספיקה קו הושעיה', 'PHQ112': 'pH', 'ECQ122': 'מוליכות',
-  'coarse_filter_1': 'מגוב גס 1', 'coarse_filter_2': 'מגוב גס 2', 'trash_tank_status': 'מצב מכולת גיבה',
-  'trash_disposal_status': 'סטטוס פינוי מכולה', 'trash_1000': 'חלפות פח 1000', 'trash_frog': 'חלפות צפרדע',
-  'notes': 'הערות'
-};
-
 let autoSaveTimer;
-let hasChanges = false;
 
 function initializeApp() {
   checkForDrafts();
@@ -634,7 +1085,6 @@ function getFormData() {
 }
 
 function triggerAutoSave() {
-  hasChanges = true;
   clearTimeout(autoSaveTimer);
   updateSaveStatus('שמירה...', 'saving');
   
@@ -651,7 +1101,6 @@ function autoSave() {
   
   updateSaveStatus('נשמר', 'saved');
   updateLastSaveTime();
-  hasChanges = false;
   checkForDrafts();
   
   setTimeout(() => {
@@ -758,7 +1207,8 @@ function confirmFinalize() {
   setTimeout(() => {
     clearForm();
     checkForDrafts();
-    switchTab({target: {classList: {add:()=>{}, remove:()=>{}}}}, 'start');
+    const tabs = document.querySelectorAll('.tab');
+    tabs[2].click();
   }, 1500);
 }
 
@@ -803,70 +1253,48 @@ function updateSummaryTab() {
     const reportDate = new Date(todayReport.date).toLocaleDateString('he-IL');
     
     html += `
-      <div class="summary-report" id="reportToCapture">
+      <div class="summary-report" id="reportToCapture" style="padding: 1.5rem;">
         <div class="summary-report-header">
-          <h1>דוח יומי - מט"ש רני סוללים</h1>
+          <h1 style="font-size: 20px;">דוח יומי - מט"ש רני סוללים</h1>
           <div class="summary-report-date">${reportDate}</div>
           <div class="summary-report-name">ממלא: ${reporterName}</div>
         </div>
         
-        <div style="margin-bottom: 1.5rem;">
-          <div class="summary-grid">
-            <div class="summary-card ok">
-              <div class="summary-label">מגובים גסים 1</div>
-              <div class="summary-value">${todayReport.coarse_filter_1 === 'ok' ? '✓' : '✗'}</div>
-            </div>
-            <div class="summary-card ${todayReport.coarse_filter_2 === 'ok' ? 'ok' : 'error'}">
-              <div class="summary-label">מגובים גסים 2</div>
-              <div class="summary-value">${todayReport.coarse_filter_2 === 'ok' ? '✓' : '✗'}</div>
-            </div>
-          </div>
+        <div style="margin-bottom: 1rem; font-size: 14px; line-height: 1.8;">
+          <h3 style="font-weight: 600; margin-bottom: 0.5rem;">📊 נתונים ראשיים:</h3>
+          <p>ספיקה ראשית: ${todayReport.FMQ112 || '-'} | ספיקה הושעיה: ${todayReport.FMQ117 || '-'}</p>
+          <p>pH: ${todayReport.PHQ112 || '-'} | מוליכות: ${todayReport.ECQ122 || '-'}</p>
+          <p>מגוב 1: ${todayReport.coarse_filter_1 === 'ok' ? '✓' : '✗'} | מגוב 2: ${todayReport.coarse_filter_2 === 'ok' ? '✓' : '✗'}</p>
+          
+          <h3 style="font-weight: 600; margin: 1rem 0 0.5rem 0;">♻️ חלפות:</h3>
+          <p>פח 1000: ${todayReport.trash_1000 || '0'} | צפרדע: ${todayReport.trash_frog || '0'}</p>
+          
+          ${todayReport.notes ? `<h3 style="font-weight: 600; margin: 1rem 0 0.5rem 0;">📝 הערות:</h3><p>${todayReport.notes}</p>` : ''}
         </div>
-
-        <div style="border-top: 2px solid #ddd; padding-top: 1rem; margin-bottom: 1rem;">
-          <h3 style="font-size: 16px; margin-bottom: 0.5rem; color: #333;">📊 נתונים:</h3>
-          <p><strong>ספיקה ראשית:</strong> ${todayReport.FMQ112 || '-'} קוב״מ/שעה</p>
-          <p><strong>ספיקה הושעיה:</strong> ${todayReport.FMQ117 || '-'} קוב״מ/שעה</p>
-          <p><strong>pH:</strong> ${todayReport.PHQ112 || '-'}</p>
-          <p><strong>מוליכות:</strong> ${todayReport.ECQ122 || '-'} mS/cm</p>
-        </div>
-
-        <div style="border-top: 2px solid #ddd; padding-top: 1rem; margin-bottom: 1rem;">
-          <h3 style="font-size: 16px; margin-bottom: 0.5rem; color: #333;">♻️ חלפות:</h3>
-          <p><strong>פח 1000:</strong> ${todayReport.trash_1000 || '0'} חלפות</p>
-          <p><strong>צפרדע:</strong> ${todayReport.trash_frog || '0'} חלפות</p>
-        </div>
-
-        ${todayReport.notes ? `
-          <div style="border-top: 2px solid #ddd; padding-top: 1rem;">
-            <h3 style="font-size: 16px; margin-bottom: 0.5rem; color: #333;">📝 הערות:</h3>
-            <p>${todayReport.notes}</p>
-          </div>
-        ` : ''}
       </div>
     `;
 
     html += `
       <div class="section" style="text-align: center;">
-        <h2>📥 אפשרויות יצוא</h2>
+        <h2>📥 אפשרויות שליחה</h2>
         <div class="button-group">
-          <button class="btn-primary" onclick="exportSummaryAsPNG()">📸 הורד כתמונה (PNG)</button>
+          <button class="btn-primary" onclick="downloadReportImage()">📸 הורד תמונה</button>
           <button class="btn-primary" onclick="window.print()">📄 הדפס / PDF</button>
-          <button class="btn-secondary" onclick="shareViaWhatsApp()">💬 שלח ב-WhatsApp</button>
+          <button class="btn-warning" onclick="sendToWhatsApp()">💬 שלח ב-WhatsApp</button>
+          <button class="btn-secondary" onclick="exportMonthlyExcel()">📊 Excel חודשי</button>
         </div>
       </div>
     `;
   } else {
     html += `<div style="background: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 1rem; border-radius: 8px;">
-      <strong>⚠️ עדיין לא הוזן דוח לאתה</strong><br>
-      <small>חזור לטופס הבדיקה ומלא את הפרטים</small>
+      <strong>⚠️ עדיין לא הוזן דוח לאתה</strong>
     </div>`;
   }
   
   document.getElementById('summaryContent').innerHTML = html;
 }
 
-function exportSummaryAsPNG() {
+function downloadReportImage() {
   showMessage('🖼️ יוצר תמונה... אנא המתן', 'success');
   const element = document.getElementById('reportToCapture');
   
@@ -874,7 +1302,8 @@ function exportSummaryAsPNG() {
     backgroundColor: '#ffffff',
     scale: 2,
     allowTaint: true,
-    useCORS: true
+    useCORS: true,
+    logging: false
   }).then(canvas => {
     const link = document.createElement('a');
     link.href = canvas.toDataURL('image/png');
@@ -883,59 +1312,45 @@ function exportSummaryAsPNG() {
     showMessage('✓ תמונה הורדה בהצלחה', 'success');
   }).catch(err => {
     showMessage('❌ שגיאה ביצירת תמונה', 'error');
-    console.error(err);
   });
 }
 
-function shareViaWhatsApp() {
-  const today = new Date().toLocaleDateString('he-IL');
-  const message = `דוח יומי מט"ש רני סוללים מתאריך ${today}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(message)}`);
+function sendToWhatsApp() {
+  showMessage('🖼️ מכין תמונה לשליחה...', 'success');
+  const element = document.getElementById('reportToCapture');
+  
+  html2canvas(element, {
+    backgroundColor: '#ffffff',
+    scale: 2,
+    allowTaint: true,
+    useCORS: true,
+    logging: false
+  }).then(canvas => {
+    canvas.toBlob(blob => {
+      const file = new File([blob], 'דוח_יומי.png', {type: 'image/png'});
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'דוח יומי מט"ש רני סוללים',
+          text: 'דוח יומי מט"ש רני סוללים',
+          files: [file]
+        }).then(() => {
+          showMessage('✓ תמונה נשלחה', 'success');
+        }).catch(err => {
+          openWhatsAppManual();
+        });
+      } else {
+        openWhatsAppManual();
+      }
+    });
+  }).catch(err => {
+    showMessage('❌ שגיאה ביצירת תמונה', 'error');
+  });
 }
 
-function updateHistoryTab() {
-  let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  
-  let html = '';
-  html += `
-    <div class="section">
-      <h2>📊 יצוא נתונים</h2>
-      <div class="button-group">
-        <button class="btn-primary" onclick="exportMonthlyExcel()">📊 הורד Excel חודשי</button>
-      </div>
-    </div>
-  `;
-  
-  if (reports.length === 0) {
-    html += `<div style="text-align: center; padding: 2rem; color: #999;">
-      <div style="font-size: 48px; margin-bottom: 1rem;">📭</div>
-      <p>אין היסטוריה עדיין</p>
-    </div>`;
-  } else {
-    html += '<div class="section"><h2>📋 דוחות שנשמרו</h2>';
-    reports.slice().reverse().forEach((report) => {
-      const dateObj = new Date(report.date);
-      const formatted = dateObj.toLocaleDateString('he-IL');
-      const time = report.timestamp ? new Date(report.timestamp).toLocaleTimeString('he-IL') : 'לא מצוין';
-      
-      html += `
-        <div class="draft-card">
-          <div class="draft-header">
-            <div>
-              <div class="draft-date">${formatted} - ${report.reporter_name || 'לא הוזן'}</div>
-              <div class="draft-time">${time}</div>
-            </div>
-            <div class="draft-actions">
-              <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="viewReport('${report.date}')">צפה</button>
-            </div>
-          </div>
-        </div>
-      `;
-    });
-    html += '</div>';
-  }
-  
-  document.getElementById('historyContent').innerHTML = html;
+function openWhatsAppManual() {
+  showMessage('💬 פתח את WhatsApp וצרף את התמונה שהורדה', 'success');
+  window.open('https://wa.me/', '_blank');
 }
 
 function exportMonthlyExcel() {
@@ -964,11 +1379,6 @@ function exportMonthlyExcel() {
     'ממלא': r.reporter_name || '-',
     'ספיקה ראשית': r.FMQ112 || '-',
     'ספיקה הושעיה': r.FMQ117 || '-',
-    'pH': r.PHQ112 || '-',
-    'מוליכות': r.ECQ122 || '-',
-    'מגוב 1': r.coarse_filter_1 || '-',
-    'מגוב 2': r.coarse_filter_2 || '-',
-    'מכולת גיבה': r.trash_tank_status || '-',
     'פח 1000': r.trash_1000 || '0',
     'צפרדע': r.trash_frog || '0',
     'הערות': r.notes || '-'
@@ -984,20 +1394,38 @@ function exportMonthlyExcel() {
   showMessage('✓ Excel הורד בהצלחה', 'success');
 }
 
-function viewReport(dateStr) {
+function updateHistoryTab() {
   let reports = JSON.parse(localStorage.getItem('daily_reports') || '[]');
-  const report = reports.find(r => r.date === dateStr);
   
-  if (report) {
-    Object.keys(report).forEach(key => {
-      const elem = document.getElementById(key);
-      if (elem) {
-        elem.value = report[key];
-        if (key.startsWith('trash_')) updateCounterDisplay(key);
-      }
+  let html = '';
+  
+  if (reports.length === 0) {
+    html += `<div style="text-align: center; padding: 2rem; color: #999;">
+      <div style="font-size: 48px; margin-bottom: 1rem;">📭</div>
+      <p>אין היסטוריה עדיין</p>
+    </div>`;
+  } else {
+    html += '<div class="section"><h2>📋 דוחות שנשמרו</h2>';
+    reports.slice().reverse().forEach((report) => {
+      const dateObj = new Date(report.date);
+      const formatted = dateObj.toLocaleDateString('he-IL');
+      const time = report.timestamp ? new Date(report.timestamp).toLocaleTimeString('he-IL') : 'לא מצוין';
+      
+      html += `
+        <div class="draft-card">
+          <div class="draft-header">
+            <div>
+              <div class="draft-date">${formatted} - ${report.reporter_name || 'לא הוזן'}</div>
+              <div class="draft-time">${time}</div>
+            </div>
+          </div>
+        </div>
+      `;
     });
-    switchTabDirect('form');
+    html += '</div>';
   }
+  
+  document.getElementById('historyContent').innerHTML = html;
 }
 
 initializeApp();
