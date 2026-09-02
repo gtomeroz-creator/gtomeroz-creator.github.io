@@ -648,14 +648,342 @@ button {
     </div>
 
     <div class="section">
-      <h2>פחים מלאים</h2>
+      <h2>תאי ממברנות</h2>
+      
+      <div style="border-right: 4px solid #667eea; padding-right: 1rem; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 16px; margin-bottom: 1rem;">תא ממברנות A</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>TMP</label>
+            <input type="number" step="0.1" id="membrane_a_tmp" placeholder="מבר" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>מד לחץ (PIT-121-A)</label>
+            <input type="number" step="0.1" id="membrane_a_pressure" placeholder="בר" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>ספיקה קולחים (FM-213-A)</label>
+            <input type="number" step="0.1" id="membrane_a_flow1" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>ספיקה קולחים 2 (FM-213-A2)</label>
+            <input type="number" step="0.1" id="membrane_a_flow2" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>משאבת קולחים (P-260-A)</label>
+            <select id="membrane_a_pump" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ספיקת אוויר (FM-111A)</label>
+            <input type="number" step="0.1" id="membrane_a_air_flow" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+        </div>
+      </div>
+
+      <div style="border-right: 4px solid #667eea; padding-right: 1rem; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 16px; margin-bottom: 1rem;">תא ממברנות B</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>TMP</label>
+            <input type="number" step="0.1" id="membrane_b_tmp" placeholder="מבר" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>מד לחץ (PIT-121-B)</label>
+            <input type="number" step="0.1" id="membrane_b_pressure" placeholder="בר" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>ספיקה קולחים (FM-213-B)</label>
+            <input type="number" step="0.1" id="membrane_b_flow1" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>ספיקה קולחים 2 (FM-213-B2)</label>
+            <input type="number" step="0.1" id="membrane_b_flow2" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>משאבת קולחים (P-260-B)</label>
+            <select id="membrane_b_pump" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ספיקת אוויר (FM-111B)</label>
+            <input type="number" step="0.1" id="membrane_b_air_flow" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+        </div>
+      </div>
+
+      <div style="border-right: 4px solid #667eea; padding-right: 1rem; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 16px; margin-bottom: 1rem;">תא ממברנות C</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>TMP</label>
+            <input type="number" step="0.1" id="membrane_c_tmp" placeholder="מבר" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>מד לחץ (PIT-121-C)</label>
+            <input type="number" step="0.1" id="membrane_c_pressure" placeholder="בר" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>ספיקה קולחים (FM-213-C)</label>
+            <input type="number" step="0.1" id="membrane_c_flow1" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>ספיקה קולחים 2 (FM-213-C2)</label>
+            <input type="number" step="0.1" id="membrane_c_flow2" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>משאבת קולחים (P-260-C)</label>
+            <select id="membrane_c_pump" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ספיקת אוויר (FM-111C)</label>
+            <input type="number" step="0.1" id="membrane_c_air_flow" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+        </div>
+      </div>
+
+      <div style="border-right: 4px solid #667eea; padding-right: 1rem;">
+        <h3 style="font-size: 16px; margin-bottom: 1rem;">תא ממברנות D</h3>
+        <div class="input-row">
+          <div class="form-group">
+            <label>TMP</label>
+            <input type="number" step="0.1" id="membrane_d_tmp" placeholder="מבר" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>מד לחץ (PIT-121-D)</label>
+            <input type="number" step="0.1" id="membrane_d_pressure" placeholder="בר" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>ספיקה קולחים (FM-213-D)</label>
+            <input type="number" step="0.1" id="membrane_d_flow1" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+          <div class="form-group">
+            <label>ספיקה קולחים 2 (FM-213-D2)</label>
+            <input type="number" step="0.1" id="membrane_d_flow2" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label>משאבת קולחים (P-260-D)</label>
+            <select id="membrane_d_pump" oninput="triggerAutoSave()">
+              <option value="">בחר מצב</option>
+              <option value="ok">✓ תקין</option>
+              <option value="not_ok">✗ לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ספיקת אוויר (FM-111D)</label>
+            <input type="number" step="0.1" id="membrane_d_air_flow" placeholder="קוב״מ/שעה" oninput="triggerAutoSave()">
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>SSV ו-MLSS</h2>
+      <div class="input-row">
+        <div class="form-group">
+          <label>SSV (ml) - מודול A</label>
+          <input type="number" step="0.1" id="ssv_a" placeholder="ml" oninput="triggerAutoSave()">
+        </div>
+        <div class="form-group">
+          <label>MLSS - מודול A</label>
+          <input type="number" step="0.1" id="mlss_a" placeholder="mg/l" oninput="triggerAutoSave()">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>SSV (ml) - מודול B</label>
+          <input type="number" step="0.1" id="ssv_b" placeholder="ml" oninput="triggerAutoSave()">
+        </div>
+        <div class="form-group">
+          <label>MLSS - מודול B</label>
+          <input type="number" step="0.1" id="mlss_b" placeholder="mg/l" oninput="triggerAutoSave()">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>SSV (ml) - מודול C</label>
+          <input type="number" step="0.1" id="ssv_c" placeholder="ml" oninput="triggerAutoSave()">
+        </div>
+        <div class="form-group">
+          <label>MLSS - מודול C</label>
+          <input type="number" step="0.1" id="mlss_c" placeholder="mg/l" oninput="triggerAutoSave()">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>SSV (ml) - מודול D</label>
+          <input type="number" step="0.1" id="ssv_d" placeholder="ml" oninput="triggerAutoSave()">
+        </div>
+        <div class="form-group">
+          <label>MLSS - מודול D</label>
+          <input type="number" step="0.1" id="mlss_d" placeholder="mg/l" oninput="triggerAutoSave()">
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>תא מגע</h2>
+      <div class="input-row">
+        <div class="form-group">
+          <label>מפלס מיכל היפוכלוריט (T-310A)</label>
+          <input type="number" step="0.1" id="contact_hypochlorate_a" placeholder="%" oninput="triggerAutoSave()">
+        </div>
+        <div class="form-group">
+          <label>מפלס מיכל היפוכלוריט (T-310B)</label>
+          <input type="number" step="0.1" id="contact_hypochlorate_b" placeholder="%" oninput="triggerAutoSave()">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>עכירות (AIT-305-NTU)</label>
+          <input type="number" step="0.1" id="contact_turbidity_auto" placeholder="NTU" oninput="triggerAutoSave()">
+        </div>
+        <div class="form-group">
+          <label>עכירות - אימות ידני</label>
+          <input type="number" step="0.1" id="contact_turbidity_manual" placeholder="NTU" oninput="triggerAutoSave()">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>כלור נותר (AIT-305-C)</label>
+          <input type="number" step="0.1" id="contact_chlorine_auto" placeholder="mg/l" oninput="triggerAutoSave()">
+        </div>
+        <div class="form-group">
+          <label>כלור נותר - אימות ידני</label>
+          <input type="number" step="0.1" id="contact_chlorine_manual" placeholder="mg/l" oninput="triggerAutoSave()">
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🌀 מפוחים</h2>
+      <div class="input-row">
+        <div class="form-group">
+          <label>מפוח 1 רובושי (M-450A)</label>
+          <select id="blower_robinson_1" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>מפוח 2 רובושי (M-450B)</label>
+          <select id="blower_robinson_2" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>מפוח 1 ארזן (M-450C)</label>
+          <select id="blower_arzan_1" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>מפוח 2 ארזן (M-450D)</label>
+          <select id="blower_arzan_2" oninput="triggerAutoSave()">
+            <option value="">בחר מצב</option>
+            <option value="ok">✓ תקין</option>
+            <option value="not_ok">✗ לא תקין</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🔄 מודול אקסטנסיבי</h2>
       <div class="form-group">
-        <label>פינוי מכולות</label>
-        <select id="trash_disposal_status2" oninput="triggerAutoSave()">
+        <label>מערבל 1</label>
+        <select id="ext_mixer_1" oninput="triggerAutoSave()">
           <option value="">בחר מצב</option>
-          <option value="done">✓ בוצע</option>
-          <option value="not_done">✗ לא בוצע</option>
+          <option value="ok">✓ תקין</option>
+          <option value="not_ok">✗ לא תקין</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label>מערבל 2</label>
+        <select id="ext_mixer_2" oninput="triggerAutoSave()">
+          <option value="">בחר מצב</option>
+          <option value="ok">✓ תקין</option>
+          <option value="not_ok">✗ לא תקין</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>מערבל 3</label>
+        <select id="ext_mixer_3" oninput="triggerAutoSave()">
+          <option value="">בחר מצב</option>
+          <option value="ok">✓ תקין</option>
+          <option value="not_ok">✗ לא תקין</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>מערבל 4</label>
+        <select id="ext_mixer_4" oninput="triggerAutoSave()">
+          <option value="">בחר מצב</option>
+          <option value="ok">✓ תקין</option>
+          <option value="not_ok">✗ לא תקין</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>מערבל 5</label>
+        <select id="ext_mixer_5" oninput="triggerAutoSave()">
+          <option value="">בחר מצב</option>
+          <option value="ok">✓ תקין</option>
+          <option value="not_ok">✗ לא תקין</option>
+        </select>
+      </div>
+      <div class="input-row">
+        <div class="form-group">
+          <label>מד חמצן רציף</label>
+          <input type="number" step="0.1" id="ext_oxygen_auto" placeholder="mg/l" oninput="triggerAutoSave()">
+        </div>
+        <div class="form-group">
+          <label>מד חמצן - אימות ידני</label>
+          <input type="number" step="0.1" id="ext_oxygen_manual" placeholder="mg/l" oninput="triggerAutoSave()">
+        </div>
       </div>
       <div style="margin-top: 1.5rem; text-align: center;">
         <button class="btn-secondary" onclick="pauseWork()">⏸️ המשך מאוחר יותר</button>
@@ -1262,9 +1590,12 @@ function updateSummaryTab() {
         
         <div style="margin-bottom: 1rem; font-size: 14px; line-height: 1.8;">
           <h3 style="font-weight: 600; margin-bottom: 0.5rem;">📊 נתונים ראשיים:</h3>
-          <p>ספיקה ראשית: ${todayReport.FMQ112 || '-'} | ספיקה הושעיה: ${todayReport.FMQ117 || '-'}</p>
-          <p>pH: ${todayReport.PHQ112 || '-'} | מוליכות: ${todayReport.ECQ122 || '-'}</p>
-          <p>מגוב 1: ${todayReport.coarse_filter_1 === 'ok' ? '✓' : '✗'} | מגוב 2: ${todayReport.coarse_filter_2 === 'ok' ? '✓' : '✗'}</p>
+          <p><strong>ת"ש:</strong> ראשית ${todayReport.FMQ112 || '-'} | הושעיה ${todayReport.FMQ117 || '-'} | pH ${todayReport.PHQ112 || '-'} | מוליכות ${todayReport.ECQ122 || '-'}</p>
+          <p><strong>סטטוסים:</strong> מגוב 1 ${todayReport.coarse_filter_1 === 'ok' ? '✓' : '✗'} | מגוב 2 ${todayReport.coarse_filter_2 === 'ok' ? '✓' : '✗'} | סינון 1 ${todayReport.fine_filter_1 === 'ok' ? '✓' : '✗'} | סינון 2 ${todayReport.fine_filter_2 === 'ok' ? '✓' : '✗'}</p>
+          
+          <h3 style="font-weight: 600; margin: 1rem 0 0.5rem 0;">🔬 ממברנות:</h3>
+          <p><strong>A:</strong> TMP ${todayReport.membrane_a_tmp || '-'} | לחץ ${todayReport.membrane_a_pressure || '-'} | משאבה ${todayReport.membrane_a_pump === 'ok' ? '✓' : '✗'}</p>
+          <p><strong>B:</strong> TMP ${todayReport.membrane_b_tmp || '-'} | לחץ ${todayReport.membrane_b_pressure || '-'} | משאבה ${todayReport.membrane_b_pump === 'ok' ? '✓' : '✗'}</p>
           
           <h3 style="font-weight: 600; margin: 1rem 0 0.5rem 0;">♻️ חלפות:</h3>
           <p>פח 1000: ${todayReport.trash_1000 || '0'} | צפרדע: ${todayReport.trash_frog || '0'}</p>
@@ -1377,9 +1708,96 @@ function exportMonthlyExcel() {
   const data = monthReports.map(r => ({
     'תאריך': r.date,
     'ממלא': r.reporter_name || '-',
-    'ספיקה ראשית': r.FMQ112 || '-',
-    'ספיקה הושעיה': r.FMQ117 || '-',
-    'פח 1000': r.trash_1000 || '0',
+    'FMQ112': r.FMQ112 || '-',
+    'FMQ117': r.FMQ117 || '-',
+    'pH': r.PHQ112 || '-',
+    'מוליכות': r.ECQ122 || '-',
+    'מגוב1': r.coarse_filter_1 || '-',
+    'מגוב2': r.coarse_filter_2 || '-',
+    'חול1': r.sand_trap_1 || '-',
+    'חול2': r.sand_trap_2 || '-',
+    'מפוח1': r.blower_1 || '-',
+    'מפוח2': r.blower_2 || '-',
+    'FMQ180': r.FMQ180 || '-',
+    'FMQ190': r.FMQ190 || '-',
+    'סינון1': r.fine_filter_1 || '-',
+    'סינון2': r.fine_filter_2 || '-',
+    'TMP-A': r.membrane_a_tmp || '-',
+    'לחץ-A': r.membrane_a_pressure || '-',
+    'ספיקה1-A': r.membrane_a_flow1 || '-',
+    'ספיקה2-A': r.membrane_a_flow2 || '-',
+    'משאבה-A': r.membrane_a_pump || '-',
+    'אוויר-A': r.membrane_a_air_flow || '-',
+    'TMP-B': r.membrane_b_tmp || '-',
+    'לחץ-B': r.membrane_b_pressure || '-',
+    'ספיקה1-B': r.membrane_b_flow1 || '-',
+    'ספיקה2-B': r.membrane_b_flow2 || '-',
+    'משאבה-B': r.membrane_b_pump || '-',
+    'אוויר-B': r.membrane_b_air_flow || '-',
+    'TMP-C': r.membrane_c_tmp || '-',
+    'לחץ-C': r.membrane_c_pressure || '-',
+    'ספיקה1-C': r.membrane_c_flow1 || '-',
+    'ספיקה2-C': r.membrane_c_flow2 || '-',
+    'משאבה-C': r.membrane_c_pump || '-',
+    'אוויר-C': r.membrane_c_air_flow || '-',
+    'TMP-D': r.membrane_d_tmp || '-',
+    'לחץ-D': r.membrane_d_pressure || '-',
+    'ספיקה1-D': r.membrane_d_flow1 || '-',
+    'ספיקה2-D': r.membrane_d_flow2 || '-',
+    'משאבה-D': r.membrane_d_pump || '-',
+    'אוויר-D': r.membrane_d_air_flow || '-',
+    'SSV-A': r.ssv_a || '-',
+    'MLSS-A': r.mlss_a || '-',
+    'SSV-B': r.ssv_b || '-',
+    'MLSS-B': r.mlss_b || '-',
+    'SSV-C': r.ssv_c || '-',
+    'MLSS-C': r.mlss_c || '-',
+    'SSV-D': r.ssv_d || '-',
+    'MLSS-D': r.mlss_d || '-',
+    'היפו-A': r.contact_hypochlorate_a || '-',
+    'היפו-B': r.contact_hypochlorate_b || '-',
+    'עכירות-אוטו': r.contact_turbidity_auto || '-',
+    'עכירות-ידני': r.contact_turbidity_manual || '-',
+    'כלור-אוטו': r.contact_chlorine_auto || '-',
+    'כלור-ידני': r.contact_chlorine_manual || '-',
+    'בלואר1רובו': r.blower_robinson_1 || '-',
+    'בלואר2רובו': r.blower_robinson_2 || '-',
+    'בלואר1ארזן': r.blower_arzan_1 || '-',
+    'בלואר2ארזן': r.blower_arzan_2 || '-',
+    'מערבל1אקסט': r.ext_mixer_1 || '-',
+    'מערבל2אקסט': r.ext_mixer_2 || '-',
+    'מערבל3אקסט': r.ext_mixer_3 || '-',
+    'מערבל4אקסט': r.ext_mixer_4 || '-',
+    'מערבל5אקסט': r.ext_mixer_5 || '-',
+    'O2-אוטו': r.ext_oxygen_auto || '-',
+    'O2-ידני': r.ext_oxygen_manual || '-',
+    'M1-M110A': r.module1_mixer_an_a || '-',
+    'M1-M110B': r.module1_mixer_an_b || '-',
+    'M1-M120A': r.module1_mixer_anox_a || '-',
+    'M1-M120B': r.module1_mixer_anox_b || '-',
+    'M1-O2A': r.module1_oxygen_a || '-',
+    'M1-O2A-ידני': r.module1_oxygen_a_manual || '-',
+    'M1-O2B': r.module1_oxygen_b || '-',
+    'M1-O2B-ידני': r.module1_oxygen_b_manual || '-',
+    'M1-RAS-A': r.module1_ras_pump_a || '-',
+    'M1-RAS-B': r.module1_ras_pump_b || '-',
+    'M1-RAS-FM': r.module1_ras_flow || '-',
+    'M1-WAS-A': r.module1_was_pump_a || '-',
+    'M1-WAS-B': r.module1_was_pump_b || '-',
+    'M2-M110C': r.module2_mixer_an_c || '-',
+    'M2-M110D': r.module2_mixer_an_d || '-',
+    'M2-M120C': r.module2_mixer_anox_c || '-',
+    'M2-M120D': r.module2_mixer_anox_d || '-',
+    'M2-O2C': r.module2_oxygen_c || '-',
+    'M2-O2C-ידני': r.module2_oxygen_c_manual || '-',
+    'M2-O2D': r.module2_oxygen_d || '-',
+    'M2-O2D-ידני': r.module2_oxygen_d_manual || '-',
+    'M2-RAS-C': r.module2_ras_pump_c || '-',
+    'M2-RAS-D': r.module2_ras_pump_d || '-',
+    'M2-RAS-FM': r.module2_ras_flow || '-',
+    'M2-WAS-C': r.module2_was_pump_c || '-',
+    'M2-WAS-D': r.module2_was_pump_d || '-',
+    'פח1000': r.trash_1000 || '0',
     'צפרדע': r.trash_frog || '0',
     'הערות': r.notes || '-'
   }));
